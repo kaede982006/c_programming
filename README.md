@@ -3,7 +3,7 @@
 <table>
 	<tr>
 		<td>
-			<p><img src="https://i.namu.wiki/i/fFCSqJv31qIh4mWDVWfF9i0_5EGeHvLFRs5IYKIwNHbjQKjbNKogyzhWwS0WBTKacCZOqjbg0s4GtFvaoSBcZkRP9Q73jCT8XJ8Scnjgid4ljRBoxP-7a8hAkHRAVs89WbALJisrMzn_-vQPDJXkow.svg" width="200px" /></p>
+			<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/The_C_Programming_Language_logo.svg/250px-The_C_Programming_Language_logo.svg.png" width="200px" /></p>
 			<h2>C는 무엇인가요?</h2>
 		</td>
 		<td>
