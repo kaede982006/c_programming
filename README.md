@@ -11,7 +11,7 @@
 			C 언어는 높은 성능과 유연한 메모리 관리로 시스템 프로그래밍,  하드웨어  제어,  운영  체제,  드라이버,  임베디드  시스템  개발에  널리  사용된다.  포인터를  활용하여 메모리에 직접 접근할 수 있어 자원을 효율적으로 활용하고 하드웨어와 밀접하게 상호작용하여 높은 성능을 제공한다.
 		</td>
 		<td>
-			<h3><em>Extreme C</em></h3>
+			<h3><em>Extreme C(By Kamran Amini)</em></h3>
 			Our lives today have been greatly impacted by the invention of the C programming language, and our world would be very different without C.
 		</td>
 	</tr>
