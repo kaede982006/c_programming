@@ -1,24 +1,28 @@
 #ifndef __LIBRARY_STRUCTURE__
 #define __LIBRARY_STRUCTURE__
 
+#define DEFAULT_STRING_LENGTH 256
 typedef struct {
     char* title;
     char* author;
     char* main_field;
     char* sub_field;
     unsigned int year;
-    unsigned short isbn;
+    char* isbn;
 } s_book;
 
 typedef struct {
-    char* name;
-    char* passwd;
     int birth_year;
     int birth_month;
     int birth_day;
     int join_year;
     int join_month;
     int join_day;
+} s_year_info;
+typedef struct {
+    char* name;
+    char* passwd;
+    s_year_info year_info;
 } s_account;
 
 typedef struct {
@@ -33,10 +37,12 @@ typedef struct {
     int salary;
 } s_librarian;
 
-void create_book(s_book* book);
+s_book* create_book(s_book* book, char* title, char* author, char* main_field, char* sub_field, unsigned int year,char* isbn);
 void delete_book(s_book* book);
-void create_user(s_user* user);
+s_user* create_user(s_user* user, s_account* account);
 void delete_user(s_user* user);
-void create_librarian(s_librarian* librarian);
+s_librarian* create_librarian(s_librarian* librarian, s_account* account);
 void delete_librarian(s_librarian* librarian);
+s_account* create_account(s_account* account, char* name, char* passwd, s_year_info year_info);
+void delete_account(s_account* account);
 #endif
