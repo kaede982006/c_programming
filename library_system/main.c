@@ -1,23 +1,38 @@
 #include "library_system.h"
+#include "library_tools.h"
+#include "library_data.h"
+
+#include <stdlib.h>
 
 int main() {
-    s_book* book1; s_book* book2;
-    s_user* user;
+    library_init();
 
-    book1=create_book(book1, "Extreme C", "Kamran Amini", "Computer Science", "C Programming",2019 ,"9781789343625");
-    book2=create_book(book2, "Extreme C", "Kamran Amini", "Computer Science", "C Programming",2019 ,"9781789343625");
+    s_user* user[10];
+    s_account* account[10];
+    char* name_buffer[10];
+    int name_buffer_length[10];
+    char* passwd_buffer[10];
+    int passwd_buffer_length[10];
 
-    s_account* account;
-    account=create_account(account, "xisik", "2342",(s_year_info){2006, 10 , 5, 2025, 12, 13});
-    user=create_user(user, account);
+    for(int i=0;i<10;i++) {
+        name_buffer_length[i]=rand()%8+5;
+        name_buffer[i]=(char*)calloc(name_buffer_length[i], sizeof(char));
+        passwd_buffer_length[i]=rand()%4+9;
+        passwd_buffer[i]=(char*)calloc(passwd_buffer_length[i], sizeof(char));
+        s_year_info year_info;
+        random_year_info(&year_info);
 
-    borrow_book(user, book1);
-    borrow_book(user, book2);
-    remove_book(user, book2);
+        account[i]=create_account(account[i], random_string(name_buffer[i], name_buffer_length[i]-1), \
+                random_string(passwd_buffer[i], passwd_buffer_length[i]-1),year_info);
+        user[i]=create_user(user[i], account[i]);
+    }
+    for(int i=0;i<10;i++) {
+        delete_user(user[i]);
+        delete_account(account[i]);
+        free(name_buffer[i]);
+        free(passwd_buffer[i]);
+    }
 
-    delete_book(book1);
-    delete_user(user);
-    delete_account(account);
-
+    library_end();
     return 0;
 }
