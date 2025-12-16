@@ -2,6 +2,7 @@
 #include "library_tools.h"
 #include "library_data.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 int main() {
@@ -25,6 +26,9 @@ int main() {
         account[i]=create_account(account[i], random_string(name_buffer[i], name_buffer_length[i]-1), \
                 random_string(passwd_buffer[i], passwd_buffer_length[i]-1),year_info);
         user[i]=create_user(user[i], account[i]);
+    }
+    for(int i=0;i<10;i++) {
+        printf("user %d: %s\n", i+1, user[i]->account->name);
     }
     for(int i=0;i<10;i++) {
         delete_user(user[i]);

@@ -26,14 +26,14 @@ typedef struct {
 } s_account;
 
 typedef struct {
-    s_account account;
+    s_account* account;
     s_book** book;
     int book_count;
     int* overdue_period;
 } s_user;
 
 typedef struct {
-    s_account account;
+    s_account* account;
     int salary;
 } s_librarian;
 

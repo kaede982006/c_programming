@@ -9,7 +9,7 @@ s_book* create_book(s_book* book,char* title, char* author, char* main_field, ch
     book->main_field=(char*)calloc(DEFAULT_STRING_LENGTH,sizeof(char));
     book->sub_field=(char*)calloc(DEFAULT_STRING_LENGTH,sizeof(char));
     book->isbn=(char*)calloc(DEFAULT_STRING_LENGTH,sizeof(char));
-    
+
     strcpy(book->title, title);
     strcpy(book->author, author);
     strcpy(book->main_field, main_field);
@@ -25,12 +25,13 @@ void delete_book(s_book* book) {
     free(book->author);
     free(book->main_field);
     free(book->sub_field);
+    free(book->isbn);
     free(book);
 }
 
 s_user* create_user(s_user* user, s_account* account) {
     user = (s_user*)calloc(1, sizeof(s_user));
-
+    user->account=account;
     user->book=(s_book**)calloc(1,sizeof(s_book*));
     user->book_count=0;
     user->overdue_period=(int*)calloc(1,sizeof(int));
@@ -45,6 +46,7 @@ void delete_user(s_user* user) {
 
 s_librarian* create_librarian(s_librarian* librarian, s_account* account) {
     librarian = (s_librarian*)calloc(1, sizeof(s_librarian));
+    librarian->account=account;
 
     librarian->salary=300;
     return librarian;
