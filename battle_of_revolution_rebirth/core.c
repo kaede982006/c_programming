@@ -1,5 +1,6 @@
 #include "sys.h"
 #include "game.h"
+#include "lo.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -38,10 +39,9 @@ int main() {
     }
     */
     add_player_skill(player, player_attack);
-    printf("%u\n", (player->element).damage);
-    printf("%u\n", (monster->element).health);
+    print_layout(player, monster);
     player_behavior(player, monster, 1);
-    printf("%u\n", (monster->element).health);
+    print_layout(player, monster);
     delete_player(player);
     delete_monster(monster);
     system("tput cnorm");

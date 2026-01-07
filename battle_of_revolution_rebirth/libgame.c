@@ -3,14 +3,17 @@
 Player* create_player(unsigned int health, unsigned int damage) {
     Player* player=(Player*)malloc(sizeof(Player));
     (player->element).health=health;
+    (player->element).original_health=health;
     (player->element).damage=damage;
     (player->element).skill=(p_skill*)calloc(1, sizeof(p_skill));
     (player->element).skill_count=0;
+    player->level=1;
     return player;
 }
 Monster* create_monster(unsigned int health, unsigned int damage) {
     Monster* monster=(Monster*)malloc(sizeof(Monster));
     (monster->element).health=health;
+    (monster->element).original_health=health;
     (monster->element).damage=damage;
     (monster->element).skill=(p_skill*)calloc(1, sizeof(p_skill));
     (monster->element).skill_count=0;
@@ -41,7 +44,12 @@ void player_attack(Player* player, Monster* monster) {
 void monster_attack(Player* player, Monster* monster) {
     (player->element).health-=(monster->element).damage;
 }
-    
+void player_heal(Player* player, Monster* monster) {
+    (player->element).health+=(player->element).damage;
+}
+void monster_heal(Player* player, Monster* monster) {
+    (monster->element).health+=(monster->element).damage;
+}   
 void delete_player(Player* player) {
     free((player->element).skill);
     free(player);

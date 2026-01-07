@@ -10,12 +10,14 @@ typedef void (*p_skill)(_Player, _Monster);
 typedef struct _Element{
     unsigned int health;
     unsigned int damage;
+    unsigned int original_health;
     p_skill* skill;
     unsigned int skill_count;
 } Element;
 
 typedef struct _Player {
     Element element;
+    unsigned short level;
 } Player;
 typedef struct _Monster {
     Element element;
@@ -29,6 +31,9 @@ void add_player_skill(Player* player, p_skill skill);
 void add_monster_skill(Monster* monster, p_skill skill);
 void player_attack(Player* player, Monster* monster);
 void monster_attack(Player* player, Monster* monster);
+void player_heal(Player* player, Monster* monster);
+void monster_heal(Player* player, Monster* monster);
+
 void delete_player(Player* player);
 void delete_monster(Monster* monster);
 #endif
