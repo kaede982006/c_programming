@@ -6,7 +6,7 @@
 #include "type.h"
 typedef struct _Player  Player;
 typedef struct _Monster Monster;
-typedef void (*p_skill)(_Player, _Monster);
+typedef void (*p_skill)(Player*, Monster*);
 typedef struct _Element{
     unsigned int health;
     unsigned int damage;
@@ -15,8 +15,13 @@ typedef struct _Element{
     unsigned int skill_count;
 } Element;
 
+typedef struct _Nuclear {
+    unsigned short gage;
+    unsigned short concentrated_value;
+} Nuclear;
 typedef struct _Player {
     Element element;
+    Nuclear* nuclear;
     unsigned short level;
 } Player;
 typedef struct _Monster {
@@ -33,7 +38,9 @@ void player_attack(Player* player, Monster* monster);
 void monster_attack(Player* player, Monster* monster);
 void player_heal(Player* player, Monster* monster);
 void monster_heal(Player* player, Monster* monster);
-
 void delete_player(Player* player);
 void delete_monster(Monster* monster);
+Nuclear* create_nuclear();
+void charge_nuclear(Nuclear* nuclear);
+void use_nuclear(Player* player, Monster* monster);
 #endif

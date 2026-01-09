@@ -7,6 +7,8 @@ Player* create_player(unsigned int health, unsigned int damage) {
     (player->element).damage=damage;
     (player->element).skill=(p_skill*)calloc(1, sizeof(p_skill));
     (player->element).skill_count=0;
+    Nuclear* nuclear=(Nuclear*)malloc(sizeof(Nuclear));
+    player->nuclear=nuclear;
     player->level=1;
     return player;
 }
@@ -45,16 +47,35 @@ void monster_attack(Player* player, Monster* monster) {
     (player->element).health-=(monster->element).damage;
 }
 void player_heal(Player* player, Monster* monster) {
-    (player->element).health+=(player->element).damage;
+    (player->element).health+=rand()%((player->element).damage/10)+(player->element).damage;
 }
 void monster_heal(Player* player, Monster* monster) {
-    (monster->element).health+=(monster->element).damage;
+    (monster->element).health+=rand()%((monster->element).damage/10)+(monster->element).damage;
 }   
 void delete_player(Player* player) {
     free((player->element).skill);
+    free(player->nuclear);
     free(player);
 }
 void delete_monster(Monster* monster) {
     free((monster->element).skill);
     free(monster);
+}
+Nuclear* create_nuclear() {
+    Nuclear* nuclear=(Nuclear*)malloc(sizeof(Nuclear));
+    nuclear->gage=0;
+    nuclear->concentrated_value=0;
+    return nuclear;
+}
+void charge_nuclear(Nuclear* nuclear) {
+    if (nuclear->gage==100) {
+        nuclear->concentrated_value++;
+    } else {
+        nuclear->gage++;
+    }
+}
+void use_nuclear(Player* player, Monster* monster) {
+    (monster->element).health-=(player->element).damage*10+player->nuclear->concentrated_value*5;
+    player->nuclear->gage=0;
+    player->nuclear->concentrated_value=0;
 }

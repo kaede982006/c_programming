@@ -73,4 +73,19 @@ void print_with_delay(const char* format, ...) {
     if (sec == 0) sec = 1;
     sleep(sec);
 }
+char* get_text_from_file(char* buffer, FILE* file, const char* filename) {
+    if((file=fopen(filename, "r"))==NULL) return NULL;
+    char in_buffer[80];
+    memset(in_buffer, 0, sizeof(in_buffer));
 
+    fread( in_buffer, sizeof( char ), 80, file);
+    strcpy(buffer, in_buffer);
+    while (!feof(file))
+    {
+        strcat(buffer, in_buffer);
+        memset(in_buffer, 0, sizeof(in_buffer));
+        fread( in_buffer, sizeof( char ), 80, file);
+    }
+    fclose(file);
+    return buffer;
+}

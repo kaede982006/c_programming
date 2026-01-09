@@ -29,3 +29,9 @@ void print_layout(Player* player, Monster* monster) {
     print("%s", monster_bar);
     print("--------------------------------------------------------------------------------");
 }
+void print_nuclear_bomb(Nuclear* nuclear) {
+    char player_bar[51]={' ',};
+    for(int i=0;i<nuclear->gage;i++) {
+        player_bar[i]='*';
+    }
+}

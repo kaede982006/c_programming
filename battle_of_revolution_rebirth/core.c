@@ -27,8 +27,6 @@ int main() {
             out_buffer[i]=(char*)calloc(width, sizeof(char));
         }
     }
-    Player* player=create_player(100,10);
-    Monster* monster=create_monster(100,1);
     /* prolog */
     /*
     {
@@ -38,12 +36,6 @@ int main() {
         print_with_delay("성을 괴멸하고 우리의 승리를 쟁취하세.");
     }
     */
-    add_player_skill(player, player_attack);
-    print_layout(player, monster);
-    player_behavior(player, monster, 1);
-    print_layout(player, monster);
-    delete_player(player);
-    delete_monster(monster);
     system("tput cnorm");
     //system("clear");
     return 0;
