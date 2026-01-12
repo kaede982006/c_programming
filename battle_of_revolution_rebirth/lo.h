@@ -4,4 +4,5 @@
 #include "game.h"
 void print_layout(Player* player, Monster* monster);
 void print_nuclear_bomb(Nuclear* nuclear);
+void xsleep(unsigned int milliseconds);
 #endif

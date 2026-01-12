@@ -24,5 +24,6 @@ build/core: core.c build/libsys.so build/libgame.so build/liblo.so
 
 build/battle_of_revolution: folder build/libsys.so build/core
 	gcc -g battle_of_revolution.c -o build/battle_of_revolution
+	cp -r data build/data
 folder:
-	mkdir -p build objects
+	mkdir -p objects build build/data

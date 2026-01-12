@@ -41,15 +41,31 @@ void add_player_skill(Player* player, p_skill skill) {
     (player->element).skill=(p_skill*)realloc((player->element).skill, ((player->element).skill_count+1)*sizeof(p_skill));
 };
 void player_attack(Player* player, Monster* monster) {
+    if(monster->element.health<(player->element).damage) {
+        monster->element.health=0;
+        return;
+    }
     (monster->element).health-=(player->element).damage;
 }
 void monster_attack(Player* player, Monster* monster) {
+    if(player->element.health<(monster->element).damage) {
+        player->element.health=0;
+        return;
+    }
     (player->element).health-=(monster->element).damage;
 }
 void player_heal(Player* player, Monster* monster) {
+    if(player->element.original_health<(player->element).health+(player->element).damage) {
+        player->element.health=player->element.original_health;
+        return;
+    }
     (player->element).health+=rand()%((player->element).damage/10)+(player->element).damage;
 }
 void monster_heal(Player* player, Monster* monster) {
+    if(monster->element.original_health<(monster->element).health+(monster->element).damage) {
+        monster->element.health=monster->element.original_health;
+        return;
+    }
     (monster->element).health+=rand()%((monster->element).damage/10)+(monster->element).damage;
 }   
 void delete_player(Player* player) {
