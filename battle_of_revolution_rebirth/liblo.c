@@ -19,8 +19,8 @@ void print_layout(Player* player, Monster* monster) {
     wchar_t skill_string[80]=L"당신의 능력: ";
     wcscat(skill_string, L"[1] 공격 ");
     wcscat(skill_string, L"[2] 치유 ");
-    if(player->level>=5) wcscat(skill_string, L"[3] AK-47 ");
-    if(player->level>=10) wcscat(skill_string, L"[4] T-34 ");
+    if(player->level>=3) wcscat(skill_string, L"[3] AK-47 ");
+    if(player->level>=5) wcscat(skill_string, L"[4] 핵폭탄 ");
     print(L"%ls", skill_string);
     print(L"--------------------------------------------------------------------------------");
     print(L"몬스터 체력: %d", (monster->element).health);
@@ -33,10 +33,12 @@ void print_layout(Player* player, Monster* monster) {
     }
     print(L"%ls", monster_bar);
     print(L"--------------------------------------------------------------------------------");
+    if(player->level>=5) {
+        print_nuclear_bomb(player->nuclear);
+    }
 }
 void print_nuclear_bomb(Nuclear* nuclear) {
-    wchar_t player_bar[51]={L' ',};
-    for(int i=0;i<nuclear->gage;i++) {
-        player_bar[i]=L'*';
-    }
+    print(L"핵폭탄 게이지: %d (20에 도달하면 발동)", nuclear->gage);
+    print(L"핵폭탄 농축도: %d (최대 20까지 가능)", nuclear->concentrated_value);
+    print(L"--------------------------------------------------------------------------------");
 }

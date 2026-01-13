@@ -39,40 +39,68 @@ int main() {
         print_per_line(buffer);
         free(buffer);
     }
+
+    Player* player=create_player(100, 10);
+    Monster* monster=create_monster(50,5);
+
+    add_player_skill(player, player_attack);
+    add_player_skill(player, player_heal);
+    add_monster_skill(monster, monster_attack);
+
     /* game */
     {
-        Player* player=create_player(100, 10);
-        Monster* monster=create_monster(50,5);
-        add_player_skill(player, player_attack);
-        add_player_skill(player, player_heal);
-        add_monster_skill(monster, monster_attack);
-        add_monster_skill(monster, monster_heal);
-        unsigned char selected_value=0;
-        while((player->element).health>0 && (monster->element).health>0) {
-            print_layout(player, monster);
-            print(L"능력을 선택하세요: ");
-            scanf("%hhu", &selected_value);
-            if(selected_value<1 || selected_value>(player->element).skill_count) {
-                print(L"잘못된 입력입니다. 다시 선택하세요.");
-                xsleep(1);
-                continue;
+        while(player->level<=10) {
+            if(player->level==3) add_monster_skill(monster, monster_heal);
+            if(player->level==3) add_player_skill(player, player_ak_47);
+            if(player->level==5) {
+                add_player_skill(player, use_nuclear);
             }
-            player_behavior(player, monster, selected_value);
-            print_layout(player, monster);
-            xsleep(1);
-            monster_behavior(monster, player);
-            print_layout(player, monster);
-            xsleep(1);
-        }
-        if((player->element).health==0) {
-            clear();
-            print(L"당신은 패배하였습니다...");
-            xsleep(2);
-        }
-        else {
-            clear();
-            print(L"당신은 승리하였습니다!");
-            xsleep(2);
+            unsigned char selected_value=0;
+            while((player->element).health>0 && (monster->element).health>0) {
+                print_layout(player, monster);
+                print(L"능력을 선택하세요: ");
+                scanf("%hhu", &selected_value);
+                if(selected_value<1 || selected_value>(player->element).skill_count) {
+                    print(L"잘못된 입력입니다. 다시 선택하세요.");
+                    xsleep(1);
+                    continue;
+                }
+                else if(selected_value==4 && player->level>=5 && player->nuclear->gage<20) {
+                    print(L"핵폭탄 게이지가 부족합니다. 다시 선택하세요.");
+                    xsleep(1);
+                    continue;
+                }
+                player_behavior(player, monster, selected_value);
+                print_layout(player, monster);
+                xsleep(1);
+                if((monster->element).health==0) break;
+                monster_behavior(monster, player);
+                print_layout(player, monster);
+                xsleep(1);
+                if(player->level>=5) {
+                    charge_nuclear(player->nuclear);
+                }
+            }
+            if((player->element).health==0) {
+                clear();
+                print(L"당신은 패배하였습니다...");
+                xsleep(2);
+            }
+            else {
+                clear();
+                print(L"당신은 승리하였습니다!");
+                xsleep(2);
+            }
+            player->level++;
+            
+            player->element.original_health+=20;
+            player->element.health=player->element.original_health;
+            player->element.damage+=5;
+
+            monster->element.original_health+=30;
+            monster->element.health=monster->element.original_health;
+            monster->element.damage+=10;
+    
         }
     }
     /* epilog */
@@ -83,7 +111,19 @@ int main() {
         print_per_line(buffer);
         free(buffer);
     }
-
+    /* cleanup */
+    {
+        for(int i=0;i<height;i++) {
+            free(buffer[i]);
+        }
+        free(buffer);
+        for(int i=0;i<height;i++) {
+            free(out_buffer[i]);
+        }
+        free(out_buffer);
+        delete_player(player);
+        delete_monster(monster);
+    }
     system("tput cnorm");
     system("clear");
     return 0;
