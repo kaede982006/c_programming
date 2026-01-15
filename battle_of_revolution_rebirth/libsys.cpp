@@ -7,11 +7,12 @@
 #include <wchar.h>
 #include <locale.h>
 #include <sys/wait.h>
+
 int line;
 int width, height;
 wchar_t** buffer;
 wchar_t** out_buffer;
-void clear() {
+extern "C" void clear() {
     printf("\x1b[2J\x1b[H");
     for (int r = 0; r < height; r++) {
         for (int s = 0; s < width; s++) {
@@ -22,7 +23,7 @@ void clear() {
     fflush(stdout);
     line=0;
 }
-void console_update(const wchar_t* str) {
+extern "C" void console_update(const wchar_t* str) {
     if (line==height-1) {
         for(int i=0;i<line-1;i++) {
             wcscpy(out_buffer[i], out_buffer[i+1]);
@@ -34,7 +35,7 @@ void console_update(const wchar_t* str) {
         line++;
     }
 }
-void print(wchar_t* format, ...) {
+extern "C" void print(wchar_t* format, ...) {
     wchar_t out[width+1];
     wchar_t buf[width+16];
 
@@ -55,7 +56,7 @@ void print(wchar_t* format, ...) {
     line=temp;
     fflush(stdout);
 }
-void print_with_delay(wchar_t* format, ...) {
+extern "C" void print_with_delay(wchar_t* format, ...) {
     wchar_t out[width+1];
     wchar_t buf[width+16];
 
@@ -78,15 +79,15 @@ void print_with_delay(wchar_t* format, ...) {
 
     xsleep(wcslen(out)/10 +1);
 }
-wchar_t* get_text_from_file(wchar_t* buffer, FILE* file, const char* filename) {
+extern "C" wchar_t* get_text_from_file(wchar_t* buffer, FILE* file, const char* filename) {
     setlocale(LC_ALL, "ko_KR.UTF-8");
     file = fopen(filename, "r, ccs=UTF-8");
     if(file == NULL) return NULL;
     
     int total_idx = 0;
-    wchar_t in_buffer[80];
+    wchar_t in_buffer[81];
     
-    while (fgetws(in_buffer, 80, file) != NULL && total_idx < 80*25-1) {
+    while (fgetws(in_buffer, 81, file) != NULL && total_idx < 80*25-1) {
         size_t len = wcslen(in_buffer);
         if (total_idx + len < 80*25-1) {
             wmemcpy(&buffer[total_idx], in_buffer, len);
@@ -100,7 +101,7 @@ wchar_t* get_text_from_file(wchar_t* buffer, FILE* file, const char* filename) {
     fclose(file);
     return buffer;
 }
-void print_per_line(wchar_t* buffer) {
+extern "C" void print_per_line(wchar_t* buffer) {
     wchar_t* line_start = buffer;
     wchar_t* line_end;
     while ((line_end = wcschr(line_start, L'\n')) != NULL) {
@@ -109,7 +110,7 @@ void print_per_line(wchar_t* buffer) {
         line_start = line_end + 1; // 다음 줄의 시작 위치로 이동
     }
 }
-void xsleep(unsigned int second) {
+extern "C" void xsleep(unsigned int second) {
     char command[32];
     sprintf(command, "sleep %u", second);
     system(command);

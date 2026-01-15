@@ -36,6 +36,7 @@ void add_player_skill(Player* player, p_skill skill);
 void add_monster_skill(Monster* monster, p_skill skill);
 void player_attack(Player* player, Monster* monster);
 void player_ak_47(Player* player, Monster* monster);
+void player_t_34(Player* player, Monster* monster);
 void monster_attack(Player* player, Monster* monster);
 void player_heal(Player* player, Monster* monster);
 void monster_heal(Player* player, Monster* monster);

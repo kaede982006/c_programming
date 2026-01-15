@@ -47,12 +47,28 @@ void player_attack(Player* player, Monster* monster) {
     (monster->element).health-=(player->element).damage;
 }
 void player_ak_47(Player* player, Monster* monster) {
+    if(monster->element.health<3*(player->element).damage/2) {
+        monster->element.health=0;
+        return;
+    }
+    (monster->element).health-=3*(player->element).damage/2;
+    if(player->element.health<(player->element).damage/5) {
+        player->element.health=0;
+        return;
+    }
+    (player->element).health-=(player->element).damage/5;
+}
+void player_t_34(Player* player, Monster* monster) {
     if(monster->element.health<2*(player->element).damage) {
         monster->element.health=0;
         return;
     }
     (monster->element).health-=2*(player->element).damage;
-    (player->element).health-=(player->element).damage/5;
+    if(player->element.health<(player->element).damage/2) {
+        player->element.health=0;
+        return;
+    }
+    (player->element).health-=(player->element).damage/2;
 }
 void monster_attack(Player* player, Monster* monster) {
     if(player->element.health<(monster->element).damage) {
@@ -99,13 +115,13 @@ void charge_nuclear(Nuclear* nuclear) {
 }
 void use_nuclear(Player* player, Monster* monster) {
     if(player->nuclear->gage<20) return;
-    if(monster->element.health<(player->element).damage*5+player->nuclear->concentrated_value*5) {
+    if(monster->element.health<(player->element).damage*4+player->nuclear->concentrated_value*5) {
         monster->element.health=0;
         player->nuclear->gage=0;
         player->nuclear->concentrated_value=0;
         return;
     }
-    (monster->element).health-=(player->element).damage*5+player->nuclear->concentrated_value*5;
+    (monster->element).health-=(player->element).damage*4+player->nuclear->concentrated_value*5;
     player->nuclear->gage=0;
     player->nuclear->concentrated_value=0;
 }

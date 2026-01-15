@@ -1,4 +1,5 @@
 #include "lo.h"
+#include "level.h"
 #include <string.h>
 #include <wchar.h>
 #include <locale.h>
@@ -19,8 +20,9 @@ void print_layout(Player* player, Monster* monster) {
     wchar_t skill_string[80]=L"당신의 능력: ";
     wcscat(skill_string, L"[1] 공격 ");
     wcscat(skill_string, L"[2] 치유 ");
-    if(player->level>=3) wcscat(skill_string, L"[3] AK-47 ");
-    if(player->level>=5) wcscat(skill_string, L"[4] 핵폭탄 ");
+    if(player->level>=P_AK_47_UNLOCK_LEVEL) wcscat(skill_string, L"[3] AK-47 ");
+    if(player->level>=P_T_34_UNLOCK_LEVEL) wcscat(skill_string, L"[4] T-34 ");
+    if(player->level>=P_NUCLEAR_UNLOCK_LEVEL) wcscat(skill_string, L"[5] 핵폭탄 ");
     print(L"%ls", skill_string);
     print(L"--------------------------------------------------------------------------------");
     print(L"몬스터 체력: %d", (monster->element).health);
@@ -33,7 +35,7 @@ void print_layout(Player* player, Monster* monster) {
     }
     print(L"%ls", monster_bar);
     print(L"--------------------------------------------------------------------------------");
-    if(player->level>=5) {
+    if(player->level>=P_NUCLEAR_UNLOCK_LEVEL) {
         print_nuclear_bomb(player->nuclear);
     }
 }

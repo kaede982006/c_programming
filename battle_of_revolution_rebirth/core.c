@@ -1,6 +1,7 @@
 #include "sys.h"
 #include "game.h"
 #include "lo.h"
+#include "level.h"
 
 #include <time.h>
 #include <stdlib.h>
@@ -51,8 +52,9 @@ int main() {
     {
         while(player->level<=10) {
             if(player->level==3) add_monster_skill(monster, monster_heal);
-            if(player->level==3) add_player_skill(player, player_ak_47);
-            if(player->level==5) {
+            if(player->level==P_AK_47_UNLOCK_LEVEL) add_player_skill(player, player_ak_47);
+            if(player->level==P_T_34_UNLOCK_LEVEL) add_player_skill(player, player_t_34);
+            if(player->level==P_NUCLEAR_UNLOCK_LEVEL) {
                 add_player_skill(player, use_nuclear);
             }
             unsigned char selected_value=0;
@@ -65,7 +67,7 @@ int main() {
                     xsleep(1);
                     continue;
                 }
-                else if(selected_value==4 && player->level>=5 && player->nuclear->gage<20) {
+                else if(selected_value==5 && player->level>=P_NUCLEAR_UNLOCK_LEVEL && player->nuclear->gage<20) {
                     print(L"핵폭탄 게이지가 부족합니다. 다시 선택하세요.");
                     xsleep(1);
                     continue;
@@ -77,7 +79,7 @@ int main() {
                 monster_behavior(monster, player);
                 print_layout(player, monster);
                 xsleep(1);
-                if(player->level>=5) {
+                if(player->level>=P_NUCLEAR_UNLOCK_LEVEL) {
                     charge_nuclear(player->nuclear);
                 }
             }
@@ -85,11 +87,13 @@ int main() {
                 clear();
                 print(L"당신은 패배하였습니다...");
                 xsleep(2);
+                goto EPILOG_FAILURE;
             }
             else {
                 clear();
                 print(L"당신은 승리하였습니다!");
                 xsleep(2);
+                goto EPILOG_SUCCESS;
             }
             player->level++;
             
@@ -97,20 +101,33 @@ int main() {
             player->element.health=player->element.original_health;
             player->element.damage+=5;
 
-            monster->element.original_health+=30;
+            monster->element.original_health+=20;
             monster->element.health=monster->element.original_health;
-            monster->element.damage+=10;
+            monster->element.damage+=8;
     
         }
     }
-    /* epilog */
+    EPILOG_FAILURE:
+    /* epilog failure */
+    {
+        clear();
+        wchar_t* buffer = (wchar_t*)calloc(80*25, sizeof(wchar_t));
+        get_text_from_file(buffer, NULL, "data/fail.txt");
+        print_per_line(buffer);
+        free(buffer);
+        goto CLEANUP;
+    }
+    EPILOG_SUCCESS:
+    /* epilog 2 */
     {
         clear();
         wchar_t* buffer = (wchar_t*)calloc(80*25, sizeof(wchar_t));
         get_text_from_file(buffer, NULL, "data/outro.txt");
         print_per_line(buffer);
         free(buffer);
+        goto CLEANUP;
     }
+    CLEANUP:
     /* cleanup */
     {
         for(int i=0;i<height;i++) {

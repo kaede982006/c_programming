@@ -12,9 +12,9 @@ build/liblo.so: liblo.c
 	gcc -c -g -fPIC liblo.c -o objects/liblo.o
 	gcc -shared objects/liblo.o -o build/liblo.so
 
-build/libsys.so: libsys.c
-	gcc -c -g -fPIC libsys.c -o objects/libsys.o
-	gcc -shared objects/libsys.o -o build/libsys.so
+build/libsys.so: libsys.cpp
+	g++ -c -g -fPIC libsys.cpp -o objects/libsys.o
+	g++ -shared objects/libsys.o -o build/libsys.so
 build/libgame.so: libgame.c
 	gcc -c -g -fPIC libgame.c -o objects/libgame.o
 	gcc -shared objects/libgame.o -o build/libgame.so
@@ -24,6 +24,6 @@ build/core: core.c build/libsys.so build/libgame.so build/liblo.so
 
 build/battle_of_revolution: folder build/libsys.so build/core
 	gcc -g battle_of_revolution.c -o build/battle_of_revolution
-	cp -r data build/data
+	cp -r data build
 folder:
-	mkdir -p objects build build/data
+	mkdir -p objects build
