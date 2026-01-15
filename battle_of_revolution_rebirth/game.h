@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include "type.h"
+
 typedef struct _Player  Player;
 typedef struct _Monster Monster;
 typedef void (*p_skill)(Player*, Monster*);

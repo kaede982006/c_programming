@@ -1,4 +1,6 @@
-#include "sys.h"
+extern "C" {
+    #include "sys.h"
+}
 #include <stdarg.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -7,6 +9,10 @@
 #include <wchar.h>
 #include <locale.h>
 #include <sys/wait.h>
+#include <fmod/fmod.hpp>
+#include <fmod/fmod_errors.h>
+
+FMOD::System *fmod_system = NULL;
 
 int line;
 int width, height;
@@ -114,4 +120,67 @@ extern "C" void xsleep(unsigned int second) {
     char command[32];
     sprintf(command, "sleep %u", second);
     system(command);
+}
+extern "C" BOOL fmod_init() {
+    FMOD_RESULT result;
+
+    result = FMOD::System_Create(&fmod_system);      // Create the main system object.
+    if (result != FMOD_OK)
+    {
+        printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+        return FALSE;
+    }
+
+    result = fmod_system->init(512, FMOD_INIT_NORMAL, 0);    // Initialize FMOD.
+    if (result != FMOD_OK)
+    {
+        printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+        return FALSE;
+    }
+    return TRUE;
+}
+extern "C" BOOL fmod_close() {
+    if (fmod_system) {
+        FMOD_RESULT result = fmod_system->release();
+        if (result != FMOD_OK)
+        {
+            printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+            return FALSE;
+        }
+        fmod_system = NULL;
+        return TRUE;
+    }
+    return FALSE;
+}
+extern "C" void fmod_play(const char* filename) {
+    if (!fmod_system) return;
+
+    FMOD::Sound* sound;
+    FMOD::Channel* channel = 0;
+    FMOD_RESULT result;
+
+    result = fmod_system->createSound(filename, FMOD_DEFAULT, 0, &sound);
+    if (result != FMOD_OK)
+    {
+        printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+        return;
+    }
+
+    result = fmod_system->playSound(sound, 0, false, &channel);
+    if (result != FMOD_OK)
+    {
+        printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+        sound->release();
+        return;
+    }
+
+    // Wait until the sound has finished playing
+    bool isPlaying = true;
+    while (isPlaying)
+    {
+        channel->isPlaying(&isPlaying);
+        fmod_system->update();
+    }
+
+    sound->release();
 }

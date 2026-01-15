@@ -13,12 +13,14 @@ extern int height;
 extern wchar_t** buffer;
 extern wchar_t** out_buffer;
 extern int line;
+Player* player;
+Monster* monster;
 
 int main() {
-    setlocale(LC_ALL, "ko_KR.UTF-8");
-    srand((unsigned int)time(NULL));
     /* initialization */
     {
+        setlocale(LC_ALL, "ko_KR.UTF-8");
+        srand((unsigned int)time(NULL));
         system("tput civis");
         line=0;
         width=80;
@@ -31,7 +33,9 @@ int main() {
         for(int i=0;i<height;i++) {
             out_buffer[i]=(wchar_t*)calloc(width, sizeof(wchar_t));
         }
+        fmod_init();
     }
+    
     /* prolog */
     {
         clear();
@@ -41,15 +45,13 @@ int main() {
         free(buffer);
     }
 
-    Player* player=create_player(100, 10);
-    Monster* monster=create_monster(50,5);
-
-    add_player_skill(player, player_attack);
-    add_player_skill(player, player_heal);
-    add_monster_skill(monster, monster_attack);
-
     /* game */
     {
+        player=create_player(100, 10);
+        monster=create_monster(50, 5);
+        add_player_skill(player, player_attack);
+        add_player_skill(player, player_heal);
+        add_monster_skill(monster, monster_attack);
         while(player->level<=10) {
             if(player->level==3) add_monster_skill(monster, monster_heal);
             if(player->level==P_AK_47_UNLOCK_LEVEL) add_player_skill(player, player_ak_47);
@@ -140,8 +142,10 @@ int main() {
         free(out_buffer);
         delete_player(player);
         delete_monster(monster);
+        fmod_close();
+        system("tput cnorm");
+        system("clear");
     }
-    system("tput cnorm");
-    system("clear");
+    
     return 0;
 }
