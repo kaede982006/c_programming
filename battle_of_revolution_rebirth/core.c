@@ -21,7 +21,6 @@ int main() {
     {
         setlocale(LC_ALL, "ko_KR.UTF-8");
         srand((unsigned int)time(NULL));
-        system("tput civis");
         line=0;
         width=80;
         height=25;
@@ -39,6 +38,7 @@ int main() {
     /* prolog */
     {
         clear();
+        fmod_play("data/intro.wav", 0, 11000);
         wchar_t* buffer = (wchar_t*)calloc(80*25, sizeof(wchar_t));
         get_text_from_file(buffer, NULL, "data/intro.txt");
         print_per_line(buffer);
@@ -95,7 +95,6 @@ int main() {
                 clear();
                 print(L"당신은 승리하였습니다!");
                 xsleep(2);
-                goto EPILOG_SUCCESS;
             }
             player->level++;
             
@@ -109,6 +108,8 @@ int main() {
     
         }
     }
+    goto EPILOG_SUCCESS;
+
     EPILOG_FAILURE:
     /* epilog failure */
     {
@@ -143,7 +144,6 @@ int main() {
         delete_player(player);
         delete_monster(monster);
         fmod_close();
-        system("tput cnorm");
         system("clear");
     }
     
