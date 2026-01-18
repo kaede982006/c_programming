@@ -7,6 +7,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+#include <ctime>
 #include <locale.h>
 #include <sys/wait.h>
 #include <fmod/fmod.hpp>
@@ -14,7 +15,7 @@ extern "C" {
 #include <thread>
 
 FMOD::System *fmod_system = NULL;
-
+BOOL release_value=FALSE;
 int line;
 int width, height;
 wchar_t** buffer;
@@ -177,7 +178,10 @@ void fmod_play_thread_worker(const char* filename, unsigned int start_ms, unsign
             } else {
                 channel->isPlaying(&isPlaying);
             }
-
+            
+            if(release_value==TRUE) {
+                break;
+            }
             // CPU 점유율 과다 방지를 위한 미세 대기 (컴퓨팅 사고: 효율성)
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
@@ -199,4 +203,49 @@ extern "C" BOOL fmod_play(const char* filename, unsigned int start_ms, unsigned 
     } catch (...) {
         return FALSE;
     }
+}
+void fmod_loop_thread_worker(const char** files) {
+    int file_count = 0;
+    if(!files || !files[0]) return;
+    while(files[file_count] != NULL) {
+        file_count++;
+    }
+    BOOL quit=FALSE;
+    while(!quit) {
+        for(int i=0;i<file_count && quit==FALSE;i++) {
+            unsigned int sound_length;
+            FMOD::Sound* sound = nullptr;
+            FMOD_RESULT result = fmod_system->createSound(files[i], FMOD_DEFAULT, nullptr, &sound);
+            if (result != FMOD_OK) return;
+            sound->getLength(&sound_length, FMOD_TIMEUNIT_MS);
+            sound->release();
+            std::thread t(fmod_play_thread_worker, files[i], 0, sound_length);
+            time_t start, finish;
+            start = time(NULL); 
+            while(time(NULL)-start<=sound_length/1000) {
+                if(release_value==TRUE) {
+                    quit=TRUE; break;
+                }
+            }
+            t.join();
+        }
+    }
+}
+// 외부 호출을 위한 C 인터페이스
+extern "C" BOOL fmod_loop(const char** files) {
+    try {
+        // 분리된 스레드(Detached Thread)에서 재생 실행
+        // 메인 스레드는 기다리지 않고 즉시 TRUE 반환
+        std::thread(fmod_loop_thread_worker, files).detach();
+        return TRUE;
+    } catch (...) {
+        return FALSE;
+    }
+}
+
+extern "C" void fmod_stop() {
+    release_value=TRUE;
+}
+extern "C" void fmod_resume() {
+    release_value=FALSE;
 }

@@ -47,12 +47,22 @@ int main() {
 
     /* game */
     {
+        static const char* files[] = {
+            "data/bg01.wav",
+            "data/bg02.wav",
+            "data/bg03.wav",
+            NULL
+        };
+
         player=create_player(100, 10);
         monster=create_monster(50, 5);
         add_player_skill(player, player_attack);
         add_player_skill(player, player_heal);
         add_monster_skill(monster, monster_attack);
         while(player->level<=10) {
+            fmod_resume();
+            fmod_loop(files);  // fmod_loop(const char** files) 형태여야 정상
+            
             if(player->level==3) add_monster_skill(monster, monster_heal);
             if(player->level==P_AK_47_UNLOCK_LEVEL) add_player_skill(player, player_ak_47);
             if(player->level==P_T_34_UNLOCK_LEVEL) add_player_skill(player, player_t_34);
@@ -86,12 +96,14 @@ int main() {
                 }
             }
             if((player->element).health==0) {
+                fmod_stop();
                 clear();
                 print(L"당신은 패배하였습니다...");
                 xsleep(2);
                 goto EPILOG_FAILURE;
             }
             else {
+                fmod_stop();
                 clear();
                 print(L"당신은 승리하였습니다!");
                 xsleep(2);
@@ -113,6 +125,8 @@ int main() {
     EPILOG_FAILURE:
     /* epilog failure */
     {
+        fmod_resume();
+        fmod_play("data/failure.wav", 0, 11000);
         clear();
         wchar_t* buffer = (wchar_t*)calloc(80*25, sizeof(wchar_t));
         get_text_from_file(buffer, NULL, "data/fail.txt");
@@ -123,6 +137,8 @@ int main() {
     EPILOG_SUCCESS:
     /* epilog 2 */
     {
+        fmod_resume();
+        fmod_play("data/victory.wav", 58000, 58000+11000);
         clear();
         wchar_t* buffer = (wchar_t*)calloc(80*25, sizeof(wchar_t));
         get_text_from_file(buffer, NULL, "data/outro.txt");

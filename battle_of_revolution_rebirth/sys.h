@@ -19,5 +19,8 @@ void xsleep(unsigned int second);
 BOOL fmod_init();
 BOOL fmod_close();
 BOOL fmod_play(const char* filename, unsigned int start_ms, unsigned int end_ms);
-extern BOOL fmod_result(FMOD_RESULT result);
+BOOL fmod_result(FMOD_RESULT result);
+BOOL fmod_loop(const char** files);
+void fmod_stop();
+void fmod_resume();
 #endif
